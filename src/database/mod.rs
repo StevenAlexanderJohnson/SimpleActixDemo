@@ -9,10 +9,7 @@ pub trait DatabaseTrait {
         &self,
         profile: &Profile,
     ) -> Result<mongodb::results::InsertOneResult, anyhow::Error>;
-    async fn patch_profile(
-        &self,
-        profile: &Profile,
-    ) -> Option<anyhow::Error>;
+    async fn patch_profile(&self, profile: &Profile) -> Option<anyhow::Error>;
 }
 
 pub struct Database {

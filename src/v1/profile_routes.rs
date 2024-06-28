@@ -79,7 +79,10 @@ mod tests {
         println!("STARTING test_profile_get");
         let app = test::init_service(
             App::new()
-                .app_data(web::Data::new(MockDatabase { should_return_error: false, should_return_none: false }))
+                .app_data(web::Data::new(MockDatabase {
+                    should_return_error: false,
+                    should_return_none: false,
+                }))
                 .service(profile_routes::<MockDatabase>()),
         )
         .await;
@@ -94,7 +97,10 @@ mod tests {
     async fn test_profile_patch() {
         let app = test::init_service(
             App::new()
-                .app_data(web::Data::new(MockDatabase { should_return_error: false, should_return_none: false }))
+                .app_data(web::Data::new(MockDatabase {
+                    should_return_error: false,
+                    should_return_none: false,
+                }))
                 .service(profile_routes::<MockDatabase>()),
         )
         .await;

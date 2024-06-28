@@ -36,10 +36,7 @@ impl DatabaseTrait for MockDatabase {
         todo!()
     }
 
-    async fn patch_profile(
-        &self,
-        _profile: &Profile,
-    ) -> Option<anyhow::Error> {
+    async fn patch_profile(&self, _profile: &Profile) -> Option<anyhow::Error> {
         if self.should_return_error {
             return Some(anyhow!("Error"));
         }
