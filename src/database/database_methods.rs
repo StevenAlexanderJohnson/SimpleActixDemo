@@ -1,3 +1,4 @@
+use anyhow::Context;
 use mongodb::bson::{doc, oid::ObjectId};
 use std::str::FromStr;
 
@@ -6,7 +7,7 @@ use crate::models::profile::Profile;
 use super::{Database, DatabaseTrait};
 
 impl DatabaseTrait for Database {
-    async fn get_profile(&self, user_id: &str) -> Result<Option<Profile>, mongodb::error::Error> {
+    async fn get_profile(&self, user_id: &str) -> Result<Option<Profile>, anyhow::Error> {
         self.client
             .database("testing")
             .collection::<Profile>("profile")
@@ -17,24 +18,23 @@ impl DatabaseTrait for Database {
                 None,
             )
             .await
+            .context("Failed to find profile")
     }
 
     async fn post_profile(
         &self,
         profile: &Profile,
-    ) -> Result<mongodb::results::InsertOneResult, mongodb::error::Error> {
+    ) -> Result<mongodb::results::InsertOneResult, anyhow::Error> {
         self.client
             .database("testing")
             .collection::<Profile>("profile")
             .insert_one(profile, None)
             .await
+            .context("Failed to insert profile")
     }
 
-    async fn patch_profile(
-        &self,
-        profile: &Profile,
-    ) -> Result<mongodb::results::UpdateResult, mongodb::error::Error> {
-        self.client
+    async fn patch_profile(&self, profile: &Profile) -> Option<anyhow::Error> {
+        match self.client
         .database("testing")
         .collection::<&Profile>("profile")
         .update_one(
@@ -44,6 +44,9 @@ impl DatabaseTrait for Database {
             },
             None,
         )
-            .await
+            .await.context("Failed to update profile") {
+                Ok(_) => None,
+                Err(e) => Some(e),
+            }
     }
 }
