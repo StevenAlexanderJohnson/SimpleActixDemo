@@ -1,3 +1,4 @@
+mod database;
 mod models;
 mod v1;
 
@@ -10,7 +11,7 @@ async fn main() -> std::io::Result<()> {
     // env_logger::init();
     let mongo_uri = std::env::var("MONGO_URI").expect("MONGO_URI must be set");
     let client = match Client::with_uri_str(mongo_uri).await {
-        Ok(client) => web::Data::new(client),
+        Ok(client) => client,
         Err(e) => panic!("Failed to connect to MongoDB: {:?}", e),
     };
 
@@ -23,7 +24,7 @@ async fn main() -> std::io::Result<()> {
                 // Register the V1 routes
                 .service(v1::v1_routes())
                 // Bind the MongoDB client to the app data
-                .app_data(client.clone()),
+                .app_data(web::Data::new(database::Database::new(client.clone()))),
         )
     })
     .bind(("127.0.0.1", 8080))?

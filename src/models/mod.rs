@@ -1,5 +1,5 @@
-pub mod user;
 pub mod profile;
+pub mod user;
 
 use mongodb::bson::oid::ObjectId;
 
@@ -12,7 +12,7 @@ where
         Some(x) => {
             let s = x.to_string();
             serializer.serialize_str(&s)
-        },
-        None => serializer.serialize_none()
+        }
+        None => serializer.serialize_none(),
     }
 }
